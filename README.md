@@ -1,27 +1,69 @@
-# JustPaste
+# JustPaste — Project Spec
 
-Paste text on one device, scan a QR code, copy it on another.
+## Overview
 
-No accounts. No backend. No data stored.
+Disposable text transfer between devices via QR code. No backend, no accounts, no storage.
 
-## How it works
+## Architecture
 
-Your text gets base64-encoded directly into the URL. The QR code is just a link containing your content. Scan it on your other device, the page decodes the hash, and you get a one-tap copy button.
+**URL-hash encoding approach.** Text is base64-encoded into the URL fragment (`#`). The QR code contains the full URL. Recipient device scans, opens the link, page decodes the hash and displays content with a one-tap copy button.
 
-Nothing ever touches a server. The data lives entirely in the QR code.
+Why this over a backend:
+- Zero server cost, zero storage, zero expiry logic needed
+- Data never touches a server — true privacy
+- Deployable as a static site (GitHub Pages, Vercel, Netlify)
+- Nothing to maintain
 
-Works for links, magnet URIs, code snippets, notes, or anything under ~1500 characters. Past that, QR codes get too dense for phone cameras to scan reliably.
+Trade-off: QR codes degrade past ~2,953 bytes (alphanumeric mode). With base64 overhead (~33%), practical limit is ~1,500 chars of raw text. Fine for links, magnet URIs, short code snippets, notes. Longer content would need a backend (future scope).
 
-## Tech stack
+## Tech Stack
 
-- Vite + vanilla JS (no framework needed for something this simple)
-- QR generation using the `qrcode` library
-- URL-safe base64 encoding for the text payload
-- Clipboard API with `execCommand` fallback for older browsers
-- Dark theme, mobile-first CSS, monospace content display
+- **Framework:** Vite + vanilla JS (no React needed — this is too simple)
+- **Styling:** Single CSS file, dark theme, mobile-first
+- **QR generation:** `qrcode` npm package (generates to canvas)
+- **Encoding:** `btoa`/`atob` with URI-safe base64
+- **Deployment:** Static site — GitHub Pages or Vercel
 
-The entire app is a static site. No server, no database, no API.
+## Pages / Views
 
-## License
+Single page, two modes detected by URL hash presence:
 
-MIT
+### 1. Paste Mode (no hash)
+- Textarea input
+- Character counter (warn at 1200, hard cap at 1500)
+- "Generate QR" button
+- Displays QR code on canvas
+- Instruction text: "Scan this on your other device"
+
+### 2. Receive Mode (hash present)
+- Decodes base64 from hash
+- Displays content in a read-only block
+- Large "Tap to Copy" button (full-width, thumb-friendly)
+- Visual feedback: button text changes to "Copied ✓" for 2s
+- Content type detection: auto-linkify URLs, style code blocks
+
+## UX Details
+
+- Dark theme (#0a0a0a background, clean contrast)
+- Mobile-first: receive mode optimized for phone screens
+- QR code sized for easy scanning (280x280 min)
+- No animations beyond the copy feedback
+- Monospace font for content display
+
+## File Structure
+
+```
+justpaste/
+├── index.html
+├── style.css
+├── main.js
+├── package.json
+└── claude.md
+```
+
+## Future Scope (not v1)
+
+- Backend mode for large text (Redis + short UUID, 10-min TTL)
+- Drag-and-drop file transfer (small files as data URIs)
+- PWA support for offline receive mode
+- Encryption option (passphrase in QR, key shared separately)

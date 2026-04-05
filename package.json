@@ -1,0 +1,16 @@
+{
+  "name": "justpaste",
+  "version": "1.0.0",
+  "description": "Quick, disposable text transfer between devices via QR code",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}

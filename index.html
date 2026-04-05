@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JustPaste</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>JustPaste</h1>
+      <p class="tagline">paste. scan. done.</p>
+    </header>
+
+    <!-- Paste Mode -->
+    <div id="paste-mode" class="mode hidden">
+      <textarea
+        id="input"
+        placeholder="Paste anything here — links, code, notes..."
+        spellcheck="false"
+        autofocus
+      ></textarea>
+      <div class="input-footer">
+        <span id="char-count" class="char-count">0 / 1500</span>
+        <button id="generate-btn" class="btn-primary" disabled>Generate QR</button>
+      </div>
+      <div id="qr-output" class="qr-output hidden">
+        <canvas id="qr-canvas"></canvas>
+        <p class="hint">Scan this on your other device</p>
+        <button id="reset-btn" class="btn-secondary">New Paste</button>
+      </div>
+    </div>
+
+    <!-- Receive Mode -->
+    <div id="receive-mode" class="mode hidden">
+      <div id="content-display" class="content-display"></div>
+      <button id="copy-btn" class="btn-copy">Tap to Copy</button>
+      <a href="/" class="back-link">Create your own paste</a>
+    </div>
+  </div>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>
